@@ -137,8 +137,12 @@ def build_test_system(np,nt):
     test_sys.init_param = options.init_param
 
     # For now, assign all the CPUs to the same clock domain
-    test_sys.cpu = [TestCPUClass(clk_domain=test_sys.cpu_clk_domain, cpu_id=i, simulate_data_stalls=True, simulate_inst_stalls=True)
-                    for i in xrange(np)]
+    if (options.cpu_type == "atomic" or options.restore_with_cpu == "atomic"):
+        test_sys.cpu = [TestCPUClass(clk_domain=test_sys.cpu_clk_domain, cpu_id=i, simulate_data_stalls=options.AtomicCPUDcacheLatency, simulate_inst_stalls=options.AtomicCPUIcacheLatency)
+                        for i in xrange(np)]
+    else:
+        test_sys.cpu = [TestCPUClass(clk_domain=test_sys.cpu_clk_domain, cpu_id=i)
+                        for i in xrange(np)]
 	
 		
     if is_kvm_cpu(TestCPUClass) or is_kvm_cpu(FutureClass):

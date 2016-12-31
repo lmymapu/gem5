@@ -96,6 +96,8 @@ def addNoISAOptions(parser):
                       help="use external ports of this port_type for caches")
     parser.add_option("--tlm-memory", type="string",
                       help="use external port for SystemC TLM cosimulation")
+    parser.add_option("--AtomicCPUDcacheLatency", action="store_true")
+    parser.add_option("--AtomicCPUIcacheLatency", action="store_true")
     parser.add_option("--caches", action="store_true")
     parser.add_option("--L1ICommMonitor", action="store_true")
     parser.add_option("--L1DCommMonitor", action="store_true")

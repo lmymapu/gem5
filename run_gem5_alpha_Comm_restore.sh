@@ -26,31 +26,12 @@ SYS_CLOCK="1GHz"
 MEM_SIZE="256MB"
 L1D_SIZE="256B"
 L2_SIZE="1kB"
-DEBUG_FLAG="Exec"
+DEBUG_FLAG="CommMonitor"
 
 echo " "
 echo "#####################-------------------You are running "$BENCHMARK"_"$NUM_OF_PROCS"P"$NUM_OF_TILES"T_"$SIM_TYPE"-------------------#####################"
 echo " "
 
-# Run Gem5 Simulation - Boot up using atomic CPU and make a checkpoint before the Benchmark starts
-
-./build/ALPHA/gem5.opt  \
-configs/custom/fs_tiled_comm_stall.py \
---kernel=$M5_PATH/binaries/vmlinux_2.6.27-gcc_4.3.4 \
---disk-image=$M5_PATH/disks/linux-parsec-2-1-m5-with-test-inputs.img \
---script=$M5_PATH/scripts/$BENCHMARK/$BENCHMARK"_"$NUM_OF_PROCS"C"/$BENCHMARK"_"$NUM_OF_PROCS"c_"$SIM_TYPE"_ckpts.rcS" \
---caches --l1d_size=$L1D_SIZE --l1d_assoc=2 \
---l2cache --l2_size=$L2_SIZE --l2_assoc=4 \
---cacheline_size=32 \
---L1DCommMonitor \
---AtomicCPUDcacheLatency \
---AtomicCPUIcacheLatency \
---cpu-clock=$CPU_CLOCK \
---sys-clock=$SYS_CLOCK \
---mem-size=$MEM_SIZE \
---cpu-type=$CPU_TYPE \
---num-tiles=$NUM_OF_TILES \
--n $NUM_OF_PROCS
 
 # Re-run Benchmark starting from Region of Interest (ROI) - Atomic Exec
 
@@ -75,9 +56,6 @@ configs/custom/fs_tiled_comm_stall.py \
 -n $NUM_OF_PROCS \
 -r 1
 
-#--L1DCommMonitor \
-#--AtomicCPUDcacheLatency \
-#--AtomicCPUIcacheLatency \
 # Mengyu: extract ROI part from debug trace Exec
 
 #./m5out/instCount m5out/$SIM_TYPE"_"$CPU_TYPE"_Stats_"$NUM_OF_PROCS"C"$NUM_OF_TILES"T.txt" \
@@ -91,7 +69,7 @@ configs/custom/fs_tiled_comm_stall.py \
 #./m5out/convert/gem5_to_trace_switch m5out/$BENCHMARK"_"$SIM_TYPE"_"$NUM_OF_PROCS"P"$NUM_OF_TILES"T_"$CPU_TYPE"_"$DEBUG_FLAG"_ROI.txt" m5out/convert/$BENCHMARK"_"$SIM_TYPE"_"$NUM_OF_PROCS"P"$NUM_OF_TILES"T_timing_"$CPU_CLOCK$SYS_CLOCK"_mem"$MEM_SIZE"_"$DEBUG_FLAG".txt" m5out/convert/benchmark/$SIM_TYPE/$BENCHMARK/$NUM_OF_PROCS"P"/$BENCHMARK"_"$NUM_OF_PROCS"P"$NUM_OF_TILES"T_"$SIM_TYPE"_timing_"$DEBUG_FLAG".txt"
 
 # Cleanup - Ckpt and Temp Files
-#rm -rf  m5out/cpt.*
+# rm -rf  m5out/cpt.*
 
 # Re-run Benchmark starting from Region of Interest (ROI) - Timing Exec and Mon
 

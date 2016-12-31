@@ -45,6 +45,7 @@
 #include "enums/OpClass.hh"
 
 #define SHORT_TRACE
+#define ARITHMETIC_TRACE
 //#define ONLY_MEM
 using namespace std;
 using namespace TheISA;
@@ -99,7 +100,7 @@ Trace::ExeTracerRecord::traceInst(const StaticInstPtr &inst, bool ran)
     } else {
         outs << "0x" << hex << cur_pc;
     }
-#ifndef SHORT_TRACE
+#ifdef ARITHMETIC_TRACE
     if (inst->isMicroop()) {
         outs << "." << setw(2) << dec << pc.microPC();
     } else {
@@ -117,7 +118,7 @@ Trace::ExeTracerRecord::traceInst(const StaticInstPtr &inst, bool ran)
 #endif
     if (ran) {
         outs << " : ";
-#ifndef SHORT_TRACE
+#ifdef ARITHMETIC_TRACE
         if (Debug::ExecOpClass) {
             outs << Enums::OpClassStrings[inst->opClass()] << " : ";
         }
