@@ -179,7 +179,7 @@ CommMonitor::recvTimingReq(PacketPtr pkt)
     }
 
     if (successful && is_read) {
-        DPRINTF(CommMonitor, "Forwarded read request\n");
+        DPRINTF(CommMonitor, "Forwarded read request: %s, PA=0x%x\n", pkt->cmdString(), pkt->getAddr());
 
         // Increment number of observed read transactions
         if (!stats.disableTransactionHists) {
@@ -216,7 +216,7 @@ CommMonitor::recvTimingReq(PacketPtr pkt)
             stats.timeOfLastReq = curTick();
         }
     } else if (successful && is_write) {
-        DPRINTF(CommMonitor, "Forwarded write request\n");
+        DPRINTF(CommMonitor, "Forwarded write request: %s, PA=0x%x\n", pkt->cmdString(), pkt->getAddr());
 
         // Same as for reads
         if (!stats.disableTransactionHists) {
@@ -256,7 +256,7 @@ CommMonitor::recvTimingReq(PacketPtr pkt)
             stats.timeOfLastReq = curTick();
         }
     } else if (successful) {
-        DPRINTF(CommMonitor, "Forwarded non read/write request\n");
+        DPRINTF(CommMonitor, "Forwarded non read/write request: %s, PA=0x%x\n", pkt->cmdString(), pkt->getAddr());
     }
 
     return successful;
@@ -310,7 +310,7 @@ CommMonitor::recvTimingResp(PacketPtr pkt)
 
     if (successful && is_read) {
         // Decrement number of outstanding read requests
-        DPRINTF(CommMonitor, "Received read response\n");
+        DPRINTF(CommMonitor, "Received read response: %s, PA=0x%x\n", pkt->cmdString(), pkt->getAddr());
         if (!stats.disableOutstandingHists) {
             assert(stats.outstandingReadReqs != 0);
             --stats.outstandingReadReqs;
@@ -328,7 +328,7 @@ CommMonitor::recvTimingResp(PacketPtr pkt)
 
     } else if (successful && is_write) {
         // Decrement number of outstanding write requests
-        DPRINTF(CommMonitor, "Received write response\n");
+        DPRINTF(CommMonitor, "Received write response: %s, PA=0x%x\n", pkt->cmdString(), pkt->getAddr());
         if (!stats.disableOutstandingHists) {
             assert(stats.outstandingWriteReqs != 0);
             --stats.outstandingWriteReqs;
@@ -338,7 +338,7 @@ CommMonitor::recvTimingResp(PacketPtr pkt)
             stats.writeLatencyHist.sample(latency);
         }
     } else if (successful) {
-        DPRINTF(CommMonitor, "Received non read/write response\n");
+        DPRINTF(CommMonitor, "Received non read/write response: %s, PA=0x%x\n", pkt->cmdString(), pkt->getAddr());
     }
     return successful;
 }
